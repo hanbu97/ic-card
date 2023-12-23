@@ -5,9 +5,17 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+# frontend code
+node_modules/
+out/
 
 # testing
 /coverage
+
+# dfx temporary files
+.dfx/
+.yarn
+canister_ids.json
 
 # next.js
 /.next/
@@ -34,3 +42,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Rust build artifacts
+target/
+Cargo.lock
