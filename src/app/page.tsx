@@ -1,14 +1,215 @@
 "use client";
 
 import Image from 'next/image'
-import { Button, NextUIProvider } from "@nextui-org/react";
+import { Button, Card, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, NextUIProvider, Tab, Tabs } from "@nextui-org/react";
 import Greeting from 'components/Greeting';
 import AuthSection from 'components/AuthSelection';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from "@nextui-org/react";
+import { HttpAgent, Identity } from "@dfinity/agent";
+import React, { useState, useEffect } from 'react';
+import { AuthClient } from "@dfinity/auth-client";
+import { useActorMethod, initialize } from "../service/hello"; // 引入 initialize 函数
+import { createActor, hello } from "../declarations/hello";
+import { UserIcon } from 'lucide-react';
+import { Principal } from '@dfinity/principal';
+import { log } from 'console';
+
 
 export default function Home() {
+  const [authClient, setAuthClient] = useState<AuthClient | null>(null);
+  // const { call: whoAmI, data: principal, loading, error } = useActorMethod("whoami");
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [identity, setIdentity] = useState<Identity | undefined>(undefined);
+  const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
+  const [whoamiActor, setWhoamiActor] = useState<any>(null);
+
+  useEffect(() => {
+    // Initialize AuthClient
+    AuthClient.create().then(async (client) => {
+      updateClient(client);
+    });
+  }, []);
+
+
+  // useEffect(() => {
+  //   const initAuthClient = async () => {
+  //     const newAuthClient = await AuthClient.create();
+  //     setAuthClient(newAuthClient);
+  //   };
+
+  //   initAuthClient();
+
+  //   // whoAmI();
+  // }, []);
+
+  // const logout = async () => {
+  //   await authClient?.logout();
+
+  //   const tmpIdentity = authClient?.getIdentity();
+  //   setIdentity(tmpIdentity);
+
+  //   const identity = client.getIdentity();
+  //   setIdentity(identity);
+
+  //   const principal = identity.getPrincipal();
+  //   setPrincipal(principal);
+
+  //   setAuthClient(client);
+
+  //   const actor = createActor(canisterId, {
+  //     agentOptions: {
+  //       identity,
+  //     },
+  //   });
+
+  //   whoAmI();
+  //   console.log(principal);
+  // }
+
+  const logout = () => {
+    authClient?.logout().then(() => {
+      updateClient(authClient!);
+    });
+
+    testfn();
+  }
+
+  const updateClient = async (client: AuthClient) => {
+    const isAuthenticated = await client.isAuthenticated();
+    setIsAuthenticated(isAuthenticated);
+
+    const identity = client.getIdentity();
+    setIdentity(identity);
+
+    const principal = identity.getPrincipal();
+    setPrincipal(principal);
+
+    setAuthClient(client);
+
+    const canisterId = process.env.CANISTER_ID_HELLO;
+    if (!canisterId) {
+      throw new Error("CANISTER_ID_HELLO environment variable is not defined.");
+    }
+    const actor = createActor(canisterId, {
+      agentOptions: {
+        identity,
+      },
+    });
+
+    setWhoamiActor(actor);
+  }
+
+  const login = () => {
+    authClient?.login({
+      identityProvider: process.env.DFX_NETWORK === "ic"
+        ? "https://identity.ic0.app"
+        : `http://localhost:4943/?canisterId=br5f7-7uaaa-aaaaa-qaaca-cai`,
+      onSuccess: () => {
+        updateClient(authClient);
+      },
+    });
+  };
+
+  // const handleLogin = async () => {
+  //   if (authClient) {
+  //     await new Promise<void>((resolve) => {
+  //       authClient.login({
+  //         identityProvider: process.env.DFX_NETWORK === "ic"
+  //           ? "https://identity.ic0.app"
+  //           : `http://localhost:4943/?canisterId=br5f7-7uaaa-aaaaa-qaaca-cai`,
+  //         onSuccess: () => resolve(),
+  //       });
+  //     });
+
+  //     const identity = authClient.getIdentity();
+  //     initialize(identity); // 使用新的身份初始化
+
+  //     // 重新初始化全局 actor 实例
+  //     const agent = new HttpAgent({ identity });
+  //     const canisterId = process.env.CANISTER_ID_HELLO;
+
+  //     if (!canisterId) {
+  //       throw new Error("CANISTER_ID_HELLO environment variable is not defined.");
+  //     }
+
+  //     // const newActor = createActor(canisterId, { agent });
+  //     // 这里可能不需要显式设置 actor，因为 initialize 应该已经更新了全局状态
+
+  //     // whoAmI();
+  //     console.log(principal);
+  //   }
+  // };
+
+  const testfn = async () => {
+    const identity = authClient?.getIdentity();
+    const principal = identity?.getPrincipal();
+    console.log(principal?.toString());
+
+    console.log(isAuthenticated);
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
+    <main className="dark flex min-h-screen flex-col items-center justify-between ">
+      <Navbar className='bg-black'>
+        <NavbarBrand>
+          {/* <AcmeLogo /> */}
+          <p className="font-bold text-inherit">ICpay</p>
+        </NavbarBrand>
+        <NavbarContent className="hidden sm:flex" justify="center">
+          <Tabs color='default' aria-label="Tabs">
+            <Tab key="Customer" title="Customer" />
+            <Tab key="Merchant" title="Merchant" />
+          </Tabs>
+        </NavbarContent>
+        <NavbarContent justify="end">
+          <NavbarItem className="hidden lg:flex">
+            <Link href="#">Login</Link>
+          </NavbarItem>
+          <NavbarItem>
+            <>
+              {/* {principal == undefined || principal!.toString() === "2vxsx-fae" ? ( */}
+              {!isAuthenticated ? (
+                <Button
+                  // onClick={handleLogin}
+                  onClick={login}
+                  // disabled={loading}
+                  className='font-bold text-md'
+                  color="primary"
+                  as={Link}
+                  href="#"
+                  variant="solid"
+                >
+                  Login
+                </Button>
+              ) : (
+                <Dropdown className='bg-black' backdrop="blur">
+                  <DropdownTrigger>
+                    <Button isIconOnly color="primary" aria-label="Profile">
+                      <UserIcon />
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    aria-label="Dropdown Variants"
+                    color='primary'
+
+                  >
+                    <DropdownItem key="new" onClick={logout}>Log Out</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              )}
+            </>
+          </NavbarItem>
+        </NavbarContent>
+      </Navbar>
+
+      <Button onClick={testfn}
+        className='flex flex-col' color="primary">
+        Button
+      </Button>
+
+
+      {/* <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           Get started by editing&nbsp;
           <code className="font-mono font-bold">src/app/page.tsx</code>
@@ -118,7 +319,7 @@ export default function Home() {
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
-      </div>
+      </div> */}
     </main>
   )
 }
