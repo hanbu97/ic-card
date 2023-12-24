@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AuthClient } from "@dfinity/auth-client";
 import { HttpAgent } from "@dfinity/agent";
 import { useActorMethod, initialize } from "../service/hello"; // 引入 initialize 函数
-import { createActor, hello } from "../declarations/hello";
+import { createActor, hello } from "declarations/hello";
 
 const AuthSection = () => {
     const [authClient, setAuthClient] = useState<AuthClient | null>(null);

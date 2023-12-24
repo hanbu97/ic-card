@@ -9,7 +9,7 @@ import { HttpAgent, Identity } from "@dfinity/agent";
 import React, { useState, useEffect } from 'react';
 import { AuthClient } from "@dfinity/auth-client";
 import { useActorMethod, initialize } from "../service/hello"; // 引入 initialize 函数
-import { createActor, hello } from "../declarations/hello";
+import { createActor, hello } from "declarations/hello";
 import { UserIcon } from 'lucide-react';
 import { Principal } from '@dfinity/principal';
 import { log } from 'console';
@@ -180,19 +180,17 @@ export default function Home() {
             </Card>
           ))}
           {/* new shop */}
-          <Card shadow="sm" isPressable onPress={() => console.log("Add new item")}>
-            <CardBody className="flex justify-center items-center h-[190px] w-[200px]">
-              <h2 className="text-3xl font-semibold">+</h2>
-            </CardBody>
-          </Card>
+          <a
+            href="/newshop">
+            <Card shadow="sm" isPressable>
+              <CardBody className="flex justify-center items-center h-[190px] w-[200px]">
+                <h2 className="text-3xl font-semibold">+</h2>
+              </CardBody>
+            </Card>
+          </a>
+
         </div>
       )}
-
-      {/* <Button onClick={testfn}
-        className='flex flex-col' color="primary">
-        Button
-      </Button> */}
-
     </main>
   )
 }
