@@ -21,11 +21,15 @@ class AuthStore {
 
     constructor() {
         makeAutoObservable(this);
-        makePersistable(this, {
-        name: 'AuthStore',
-        properties: ['isAuthenticated', 'principal', 'shops', 'whoamiActor', 'selectedTab', 'authClient'], // 持久化的属性
-        storage: localStorage, // 使用 localStorage 进行持久化
-        });
+
+        if (typeof window !== 'undefined') {
+          makePersistable(this, {
+            name: 'AuthStore',
+            properties: ['isAuthenticated', 'principal', 'shops', 'whoamiActor', 'selectedTab', 'authClient'], // 持久化的属性
+            storage: localStorage, 
+            });
+        }
+      
         this.initAuthClient();
     }
 
