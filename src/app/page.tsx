@@ -8,112 +8,134 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from "@nextui-or
 import { HttpAgent, Identity } from "@dfinity/agent";
 import React, { useState, useEffect, Key } from 'react';
 import { AuthClient } from "@dfinity/auth-client";
-import { useActorMethod, initialize } from "../service/hello"; // 引入 initialize 函数
+// import { useActorMethod, initialize } from "../service/hello"; // 引入 initialize 函数
 import { createActor, hello } from "declarations/hello";
 import { UserIcon } from 'lucide-react';
 import { Principal } from '@dfinity/principal';
 import { log } from 'console';
+import { useAuthStore } from "service/auth";
+import useStore from "service/store";
 // import { Grid, Text } from '@nextui-org/react';
 
-import useStore from "service/store";
+// import useStore from "service/store";
+// import { useGetShops } from "service/hello";
 
 export default function Home() {
-  const [authClient, setAuthClient] = useState<AuthClient | null>(null);
-  // const { call: whoAmI, data: principal, loading, error } = useActorMethod("whoami");
+  // const [authClient, setAuthClient] = useState<AuthClient | null>(null);
+  // // const { call: whoAmI, data: principal, loading, error } = useActorMethod("whoami");
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [identity, setIdentity] = useState<Identity | undefined>(undefined);
-  const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
-  const [whoamiActor, setWhoamiActor] = useState<any>(null);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [identity, setIdentity] = useState<Identity | undefined>(undefined);
+  // const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
+  // const [whoamiActor, setWhoamiActor] = useState<any>(null);
 
-  // app mode 
-  // const [selectedTab, setSelectedTab] = useState<String>('Customer');
-  const selectedTab = useStore((state) => state.selectedTab);
-  const setSelectedTab = useStore((state) => state.setSelectedTab);
-  const { call: getShops, data: getshops, loading, error } = useActorMethod("get_shops");
-
-
-  // shops
-  const [shops, setShops] = useState<string[]>([]);
-
-  // 使用一个固定的图片路径
-  const imgPath = "/images/fruit-1.jpeg";
-
-  useEffect(() => {
-    // Initialize AuthClient
-    AuthClient.create().then(async (client) => {
-      updateClient(client);
-    });
-  }, []);
+  // // app mode 
+  // // const [selectedTab, setSelectedTab] = useState<String>('Customer');
+  // const selectedTab = useStore((state) => state.selectedTab);
+  // const setSelectedTab = useStore((state) => state.setSelectedTab);
+  // // const { call: getShops, data: getshops, loading, error } = useActorMethod("get_shops");
+  // // const { callGetShops, shops: getshops, loading, error } = useGetShops();
 
 
-  const logout = () => {
-    authClient?.logout().then(() => {
-      updateClient(authClient!);
-    });
+  // // shops
+  // const [shops, setShops] = useState<string[]>([]);
 
-    testfn();
-  }
+  // // tmp 
+  // const imgPath = "/images/test1.jpeg";
 
-  const updateClient = async (client: AuthClient) => {
-    const isAuthenticated = await client.isAuthenticated();
-    setIsAuthenticated(isAuthenticated);
+  // useEffect(() => {
+  //   // Initialize AuthClient
+  //   AuthClient.create().then(async (client) => {
+  //     updateClient(client);
+  //   });
+  // }, []);
 
-    const identity = client.getIdentity();
-    setIdentity(identity);
 
-    const principal = identity.getPrincipal();
-    setPrincipal(principal);
+  // const logout = () => {
+  //   authClient?.logout().then(() => {
+  //     updateClient(authClient!);
+  //   });
 
-    setAuthClient(client);
+  //   testfn();
+  // }
 
-    const canisterId = process.env.CANISTER_ID_HELLO;
-    if (!canisterId) {
-      throw new Error("CANISTER_ID_HELLO environment variable is not defined.");
-    }
-    const actor = createActor(canisterId, {
-      agentOptions: {
-        identity,
-      },
-    });
+  // const updateClient = async (client: AuthClient) => {
+  //   const isAuthenticated = await client.isAuthenticated();
+  //   setIsAuthenticated(isAuthenticated);
 
-    setWhoamiActor(actor);
-  }
+  //   const identity = client.getIdentity();
+  //   setIdentity(identity);
 
-  const login = () => {
-    authClient?.login({
-      identityProvider: process.env.DFX_NETWORK === "ic"
-        ? "https://identity.ic0.app"
-        : `http://localhost:4943/?canisterId=br5f7-7uaaa-aaaaa-qaaca-cai`,
-      onSuccess: () => {
-        updateClient(authClient);
-      },
-    });
-  };
+  //   const principal = identity.getPrincipal();
+  //   setPrincipal(principal);
+
+  //   setAuthClient(client);
+
+  //   const canisterId = process.env.CANISTER_ID_HELLO;
+  //   if (!canisterId) {
+  //     throw new Error("CANISTER_ID_HELLO environment variable is not defined.");
+  //   }
+  //   const actor = createActor(canisterId, {
+  //     agentOptions: {
+  //       identity,
+  //     },
+  //   });
+
+  //   setWhoamiActor(actor);
+  // }
+
+  // const login = () => {
+  //   authClient?.login({
+  //     identityProvider: process.env.DFX_NETWORK === "ic"
+  //       ? "https://identity.ic0.app"
+  //       : `http://localhost:4943/?canisterId=br5f7-7uaaa-aaaaa-qaaca-cai`,
+  //     onSuccess: () => {
+  //       updateClient(authClient);
+  //     },
+  //   });
+  // };
 
 
   const testfn = async () => {
-    const identity = authClient?.getIdentity();
-    const principal = identity?.getPrincipal();
     console.log(principal?.toString());
-
     console.log(isAuthenticated);
   }
 
+  // const handleSelectTab = async (key: Key) => {
+  //   const tabKey = String(key);
+
+  //   setSelectedTab(tabKey);
+  //   console.log(tabKey);
+  //   if (tabKey === 'Merchant') {
+
+  //     callGetShops();
+  //     // const shopNames = getshops?.map(shop => shop.name) ?? [];
+  //     // setShops(shopNames);
+
+  //     console.log(getshops);
+  //     console.log(shops);
+  //     console.log(principal?.toString());
+  //   }
+  // }
+
+  const { isAuthenticated, login, logout, principal, getShops, shops } = useAuthStore();
+  const selectedTab = useStore((state) => state.selectedTab);
+  const setSelectedTab = useStore((state) => state.setSelectedTab);
+
+  // 使用一个固定的图片路径
+  const imgPath = "/images/test1.jpeg";
+
+  useEffect(() => {
+    if (selectedTab === 'Merchant') {
+      getShops(); // 当选中 'Merchant' 时，获取商店数据
+    }
+  }, [selectedTab, getShops]);
+
   const handleSelectTab = async (key: Key) => {
     const tabKey = String(key);
-
     setSelectedTab(tabKey);
-    console.log(tabKey);
     if (tabKey === 'Merchant') {
-
-      getShops();
-      const shopNames = getshops?.map(shop => shop.name) ?? [];
-      setShops(shopNames);
-
-      console.log(getshops);
-      console.log(shops);
-      console.log(principal?.toString());
+      await getShops(); // 调用 getShops 方法获取商店数据
     }
   }
 
@@ -179,6 +201,9 @@ export default function Home() {
       {selectedTab === 'Customer' && (
         <div className="flex flex-1 items-center justify-center">
           <p>Customers Content</p>
+          <Button color="primary" onClick={testfn}>
+            TEST
+          </Button>
         </div>
       )}
 
@@ -191,13 +216,13 @@ export default function Home() {
                   shadow="sm"
                   radius="lg"
                   width="100%"
-                  alt={title}
+                  alt={title.name}
                   className="object-cover h-[140px] w-[200px]"
                   src={imgPath}
                 />
               </CardBody>
               <CardFooter className="flex justify-center">
-                <b>{title}</b>
+                <b>{title.name}</b>
               </CardFooter>
             </Card>
           ))}
