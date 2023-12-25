@@ -6,7 +6,7 @@ import Greeting from 'components/Greeting';
 import AuthSection from 'components/AuthSelection';
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from "@nextui-org/react";
 import { HttpAgent, Identity } from "@dfinity/agent";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Key } from 'react';
 import { AuthClient } from "@dfinity/auth-client";
 import { useActorMethod, initialize } from "../service/hello"; // 引入 initialize 函数
 import { createActor, hello } from "declarations/hello";
@@ -15,6 +15,7 @@ import { Principal } from '@dfinity/principal';
 import { log } from 'console';
 // import { Grid, Text } from '@nextui-org/react';
 
+import useStore from "service/store";
 
 export default function Home() {
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
@@ -26,7 +27,11 @@ export default function Home() {
   const [whoamiActor, setWhoamiActor] = useState<any>(null);
 
   // app mode 
-  const [selectedTab, setSelectedTab] = useState<String>('Customer');
+  // const [selectedTab, setSelectedTab] = useState<String>('Customer');
+  const selectedTab = useStore((state) => state.selectedTab);
+  const setSelectedTab = useStore((state) => state.setSelectedTab);
+  const { call: getShops, data: getshops, loading, error } = useActorMethod("get_shops");
+
 
   // shops
   const [shops, setShops] = useState<string[]>([]);
@@ -95,6 +100,23 @@ export default function Home() {
     console.log(isAuthenticated);
   }
 
+  const handleSelectTab = async (key: Key) => {
+    const tabKey = String(key);
+
+    setSelectedTab(tabKey);
+    console.log(tabKey);
+    if (tabKey === 'Merchant') {
+
+      getShops();
+      const shopNames = getshops?.map(shop => shop.name) ?? [];
+      setShops(shopNames);
+
+      console.log(getshops);
+      console.log(shops);
+      console.log(principal?.toString());
+    }
+  }
+
   return (
     // <main className="dark bg-black flex flex-col items-center justify-between ">
     <main className="dark bg-black flex flex-col items-center justify-start min-h-screen">
@@ -107,7 +129,7 @@ export default function Home() {
           <Tabs
             color='default'
             aria-label="Tabs"
-            onSelectionChange={(key) => setSelectedTab(key as string)}
+            onSelectionChange={handleSelectTab}
           >
             <Tab key="Customer" title="Customer" />
             <Tab key="Merchant" title="Merchant" />
