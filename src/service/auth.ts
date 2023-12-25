@@ -1,3 +1,5 @@
+"use client";
+
 import { makeAutoObservable } from "mobx";
 import { AuthClient } from "@dfinity/auth-client";
 import { canisterId, createActor } from "declarations/hello";
@@ -22,10 +24,6 @@ class AuthStore {
         storage: localStorage, // 使用 localStorage 进行持久化
         });
     }
-
-//   constructor() {
-//     makeAutoObservable(this);
-//   }
 
   login = async () => {
     const client = await AuthClient.create();
