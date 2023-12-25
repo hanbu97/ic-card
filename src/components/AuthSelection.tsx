@@ -1,12 +1,15 @@
+import { observer } from 'mobx-react';
 import React from 'react';
-import { useAuthStore } from 'service/auth';
+import { authStore } from 'service/auth';
+// import { useAuthStore } from 'service/auth';
 // import { useLogin, useWhoAmI } from 'service/hello'; // 确保路径正确
 
-const AuthSection = () => {
+const AuthSection = observer(() => {
     // const { authClient, handleLogin } = useLogin();
     // const { callWhoAmI, principal, loading, error } = useWhoAmI();
 
-    const { login, whoami, principal, isAuthenticated } = useAuthStore();
+    // const { login, whoami, principal, isAuthenticated } = useAuthStore();
+    const { login, whoami, principal, isAuthenticated } = authStore;
 
     const handleLogin = async () => {
         await login();
@@ -34,6 +37,6 @@ const AuthSection = () => {
             {principal && <section>Principal: {principal}</section>}
         </main>
     );
-};
+});
 
 export default AuthSection;

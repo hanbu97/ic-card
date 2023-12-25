@@ -13,7 +13,7 @@ import { createActor, hello } from "declarations/hello";
 import { UserIcon } from 'lucide-react';
 import { Principal } from '@dfinity/principal';
 import { log } from 'console';
-import { useAuthStore } from "service/auth";
+// import { useAuthStore } from "service/auth";
 import useStore from "service/store";
 // import { Grid, Text } from '@nextui-org/react';
 
@@ -21,102 +21,10 @@ import useStore from "service/store";
 // import { useGetShops } from "service/hello";
 
 export default function Home() {
-  // const [authClient, setAuthClient] = useState<AuthClient | null>(null);
-  // // const { call: whoAmI, data: principal, loading, error } = useActorMethod("whoami");
-
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // const [identity, setIdentity] = useState<Identity | undefined>(undefined);
-  // const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
-  // const [whoamiActor, setWhoamiActor] = useState<any>(null);
-
-  // // app mode 
-  // // const [selectedTab, setSelectedTab] = useState<String>('Customer');
-  // const selectedTab = useStore((state) => state.selectedTab);
-  // const setSelectedTab = useStore((state) => state.setSelectedTab);
-  // // const { call: getShops, data: getshops, loading, error } = useActorMethod("get_shops");
-  // // const { callGetShops, shops: getshops, loading, error } = useGetShops();
-
-
-  // // shops
-  // const [shops, setShops] = useState<string[]>([]);
-
-  // // tmp 
-  // const imgPath = "/images/test1.jpeg";
-
-  // useEffect(() => {
-  //   // Initialize AuthClient
-  //   AuthClient.create().then(async (client) => {
-  //     updateClient(client);
-  //   });
-  // }, []);
-
-
-  // const logout = () => {
-  //   authClient?.logout().then(() => {
-  //     updateClient(authClient!);
-  //   });
-
-  //   testfn();
-  // }
-
-  // const updateClient = async (client: AuthClient) => {
-  //   const isAuthenticated = await client.isAuthenticated();
-  //   setIsAuthenticated(isAuthenticated);
-
-  //   const identity = client.getIdentity();
-  //   setIdentity(identity);
-
-  //   const principal = identity.getPrincipal();
-  //   setPrincipal(principal);
-
-  //   setAuthClient(client);
-
-  //   const canisterId = process.env.CANISTER_ID_HELLO;
-  //   if (!canisterId) {
-  //     throw new Error("CANISTER_ID_HELLO environment variable is not defined.");
-  //   }
-  //   const actor = createActor(canisterId, {
-  //     agentOptions: {
-  //       identity,
-  //     },
-  //   });
-
-  //   setWhoamiActor(actor);
-  // }
-
-  // const login = () => {
-  //   authClient?.login({
-  //     identityProvider: process.env.DFX_NETWORK === "ic"
-  //       ? "https://identity.ic0.app"
-  //       : `http://localhost:4943/?canisterId=br5f7-7uaaa-aaaaa-qaaca-cai`,
-  //     onSuccess: () => {
-  //       updateClient(authClient);
-  //     },
-  //   });
-  // };
-
-
   const testfn = async () => {
     console.log(principal?.toString());
     console.log(isAuthenticated);
   }
-
-  // const handleSelectTab = async (key: Key) => {
-  //   const tabKey = String(key);
-
-  //   setSelectedTab(tabKey);
-  //   console.log(tabKey);
-  //   if (tabKey === 'Merchant') {
-
-  //     callGetShops();
-  //     // const shopNames = getshops?.map(shop => shop.name) ?? [];
-  //     // setShops(shopNames);
-
-  //     console.log(getshops);
-  //     console.log(shops);
-  //     console.log(principal?.toString());
-  //   }
-  // }
 
   const { isAuthenticated, login, logout, principal, getShops, shops } = useAuthStore();
   const selectedTab = useStore((state) => state.selectedTab);
