@@ -27,9 +27,9 @@ fn get_shops() -> Vec<Shop> {
 #[ic_cdk::update]
 fn create_shop(name: String) {
     let caller = ic_cdk::caller();
-    if caller == Principal::anonymous() {
-        ic_cdk::trap("Anonymous callers are not allowed to create shops");
-    }
+    // if caller == Principal::anonymous() {
+    //     ic_cdk::trap("Anonymous callers are not allowed to create shops");
+    // }
 
     SHOPS.with(|shops| {
         let mut shops = shops.borrow_mut();

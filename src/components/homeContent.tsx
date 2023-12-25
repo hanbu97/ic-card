@@ -7,9 +7,10 @@ import { observer } from 'mobx-react';
 
 const HomeContent = observer(() => {
     const imgPath = "/images/test1.jpeg";
-    const { shops, selectedTab, principal, isAuthenticated } = authStore;
+    const { whoami, shops, selectedTab, principal, isAuthenticated } = authStore;
 
     const testfn = async () => {
+        whoami();
         console.log(principal?.toString());
         console.log(isAuthenticated);
     }

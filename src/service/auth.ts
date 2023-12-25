@@ -4,6 +4,8 @@ import { makeAutoObservable } from "mobx";
 import { AuthClient } from "@dfinity/auth-client";
 import { canisterId, createActor } from "declarations/hello";
 import { makePersistable } from "mobx-persist-store";
+import { ActorSubclass } from "@dfinity/agent";
+import { _SERVICE } from "declarations/hello/hello.did";
 
 interface Shop {
   name: string;
@@ -12,30 +14,35 @@ interface Shop {
 class AuthStore {
     isAuthenticated = false;
     principal: string | null = null;
-    whoamiActor: any = null; // 替换为具体的 Actor 类型
+    whoamiActor: ActorSubclass<_SERVICE> | null = null;
     shops: Shop[] = [];
     selectedTab: string = 'Customer'; 
+    authClient: AuthClient | null = null;
 
     constructor() {
         makeAutoObservable(this);
         makePersistable(this, {
         name: 'AuthStore',
-        properties: ['isAuthenticated', 'principal', 'shops', 'whoamiActor', 'selectedTab'], // 持久化的属性
+        properties: ['isAuthenticated', 'principal', 'shops', 'whoamiActor', 'selectedTab', 'authClient'], // 持久化的属性
         storage: localStorage, // 使用 localStorage 进行持久化
         });
+        this.initAuthClient();
+    }
+
+    async initAuthClient() {
+      this.authClient = await AuthClient.create();
     }
 
   login = async () => {
-    const client = await AuthClient.create();
     await new Promise<void>((resolve, reject) => {
-      client.login({
+      this.authClient!.login({
         identityProvider: process.env.DFX_NETWORK === "ic"
         ? "https://identity.ic0.app"
         : `http://localhost:4943/?canisterId=br5f7-7uaaa-aaaaa-qaaca-cai`,
         onSuccess: () => {
-          const identity = client.getIdentity();
+          const identity = this.authClient!.getIdentity();
           const principal = identity.getPrincipal().toString();
-          const actor = createActor(canisterId, { agentOptions: { identity } });
+          const actor: ActorSubclass<_SERVICE> = createActor(canisterId, { agentOptions: { identity } });
           this.isAuthenticated = true;
           this.principal = principal;
           this.whoamiActor = actor;
@@ -50,8 +57,9 @@ class AuthStore {
   };
 
   logout = async () => {
-    const client = await AuthClient.create();
-    await client.logout();
+    if (this.authClient != null) {
+      await this.authClient?.logout();
+    }
     this.isAuthenticated = false;
     this.principal = null;
     this.whoamiActor = null;
@@ -75,10 +83,12 @@ class AuthStore {
   
 
   whoami = async () => {
+    console.log(this.whoamiActor!.whoami);
+
     if (this.whoamiActor) {
       try {
-        const response = await this.whoamiActor.whoami();
-        this.principal = response.principal;
+        const response = await this.whoamiActor!.whoami();
+        this.principal = response;
       } catch (error) {
         console.error("Error calling whoami:", error);
         // 在此处理错误

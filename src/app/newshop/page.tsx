@@ -4,31 +4,22 @@ import Link from "next/link";
 import { Navbar, Button, Input } from '@nextui-org/react';
 import { ArrowLeft } from 'lucide-react';
 import { useState } from "react";
-// import { useActorMethod } from "service/hello";
-// import { useRouter } from "next/router";
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from "service/auth";
-// import { useCreateShop, useWhoAmI } from "service/hello";
+import { authStore } from "service/auth";
 
 
 const NewShop: React.FC = () => {
     const router = useRouter();
     const [value, setValue] = useState("");
-    // const { call: createShop, loading, error } = useActorMethod("create_shop");
-    // const { call: whoAmI, data: principal, } = useActorMethod("whoami");
-    // const { callCreateShop, loading, error } = useCreateShop();
-    // const { callWhoAmI, principal, loading: loading1, error: error1 } = useWhoAmI();
-    const { isAuthenticated, login, whoami, logout, principal, getShops, shops } = useAuthStore();
 
+    const { principal, whoami, initAuthClient } = authStore;
 
     const handleCreate = async () => {
         if (value != "") {
             // createShop(value);
-
+            initAuthClient();
             whoami();
             console.log(principal);
-
-            // router.back();
         }
     };
 
