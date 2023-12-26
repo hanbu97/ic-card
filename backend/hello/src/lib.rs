@@ -4,10 +4,11 @@ use std::collections::HashMap;
 use candid::{CandidType, Principal};
 
 thread_local! {
-    static SHOPS: RefCell<HashMap<Principal, Vec<Shop>>> = RefCell::new(HashMap::new());
+    static OWNER_SHOPS: RefCell<HashMap<Principal, Vec<Shop>>> = RefCell::new(HashMap::new());
+    static SHOPS_OWNER: RefCell<HashMap<Shop, Principal>> = RefCell::new(HashMap::new());
 }
 
-#[derive(CandidType, Clone)]
+#[derive(CandidType, Clone, PartialEq, Eq, Hash)]
 struct Shop {
     name: String,
 }
@@ -15,7 +16,7 @@ struct Shop {
 #[ic_cdk::query]
 fn get_shops() -> Vec<Shop> {
     let caller = ic_cdk::caller();
-    SHOPS.with(|shops| {
+    OWNER_SHOPS.with(|shops| {
         shops
             .borrow()
             .get(&caller)
@@ -24,13 +25,28 @@ fn get_shops() -> Vec<Shop> {
     })
 }
 
+#[ic_cdk::query]
+fn all_shops() -> Vec<String> {
+    SHOPS_OWNER.with(|shops| {
+        shops
+            .borrow()
+            .iter()
+            .map(|(shop, v)| format!("{}: {}", shop.name, v))
+            .collect()
+    })
+}
+
 #[ic_cdk::update]
 fn create_shop(name: String) {
     let caller = ic_cdk::caller();
-    SHOPS.with(|shops| {
+    OWNER_SHOPS.with(|shops| {
         let mut shops = shops.borrow_mut();
         let shop_list = shops.entry(caller).or_insert_with(Vec::new);
-        shop_list.push(Shop { name });
+        shop_list.push(Shop { name: name.clone() });
+    });
+    SHOPS_OWNER.with(|shops| {
+        let mut shops = shops.borrow_mut();
+        shops.insert(Shop { name }, caller);
     });
 }
 
