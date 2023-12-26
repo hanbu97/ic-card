@@ -7,4 +7,5 @@ service : {
   whoami : () -> (text) query;
   create_shop : (text) -> ();
   get_shops : () -> (vec Shop) query;
+  all_shops : () -> (vec text) query;
 };

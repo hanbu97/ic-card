@@ -31,7 +31,7 @@ fn all_shops() -> Vec<String> {
         shops
             .borrow()
             .iter()
-            .map(|(shop, v)| format!("{}: {}", shop.name, v))
+            .map(|(shop, v)| format!("{}:{}", shop.name, v))
             .collect()
     })
 }
