@@ -22,13 +22,13 @@ class AuthStore {
     constructor() {
         makeAutoObservable(this);
 
-        if (typeof window !== 'undefined') {
-          makePersistable(this, {
-            name: 'AuthStore',
-            properties: ['isAuthenticated', 'principal', 'shops', 'whoamiActor', 'selectedTab', 'authClient'], // 持久化的属性
-            storage: localStorage, 
-            });
-        }
+        // if (typeof window !== 'undefined') {
+        //   makePersistable(this, {
+        //     name: 'AuthStore',
+        //     properties: ['isAuthenticated', 'principal', 'shops', 'whoamiActor', 'selectedTab', 'authClient'], // 持久化的属性
+        //     storage: localStorage, 
+        //     });
+        // }
       
         this.initAuthClient();
     }
