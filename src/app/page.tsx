@@ -1,6 +1,5 @@
 "use client";
 
-// import Image from 'next/image'
 import { Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, NextUIProvider, Tab, Tabs, Image } from "@nextui-org/react";
 import Greeting from 'components/Greeting';
 import AuthSection from 'components/AuthSelection';
@@ -13,6 +12,7 @@ import { createActor, hello } from "declarations/hello";
 import { UserIcon } from 'lucide-react';
 import { Principal } from '@dfinity/principal';
 import { log } from 'console';
+import HomeMerchant from "components/HomeMerchant";
 
 export default function Home() {
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
@@ -26,8 +26,7 @@ export default function Home() {
   // app mode 
   const [selectedTab, setSelectedTab] = useState<String>('Customer');
 
-  // shops
-  const [shops, setShops] = useState<string[]>([]);
+
 
   // 使用一个固定的图片路径
   const imgPath = "/images/fruit-1.jpeg";
@@ -162,28 +161,12 @@ export default function Home() {
 
       {selectedTab === 'Merchant' && (
         <div className="gap-2 grid grid-cols-2 items-start">
-          {shops.map((title, index) => (
-            <Card shadow="sm" key={index} isPressable onPress={() => console.log("item pressed")}>
-              <CardBody className="overflow-visible p-0">
-                <Image
-                  shadow="sm"
-                  radius="lg"
-                  width="100%"
-                  alt={title}
-                  className="object-cover h-[140px] w-[200px]"
-                  src={imgPath}
-                />
-              </CardBody>
-              <CardFooter className="flex justify-center">
-                <b>{title}</b>
-              </CardFooter>
-            </Card>
-          ))}
+          <HomeMerchant />
           {/* new shop */}
           <a
             href="/newshop">
             <Card shadow="sm" isPressable>
-              <CardBody className="flex justify-center items-center h-[190px] w-[200px]">
+              <CardBody className="flex justify-center items-center h-[210px] w-[200px]">
                 <h2 className="text-3xl font-semibold">+</h2>
               </CardBody>
             </Card>
