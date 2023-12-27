@@ -13,6 +13,7 @@ import { UserIcon } from 'lucide-react';
 import { Principal } from '@dfinity/principal';
 import { log } from 'console';
 import HomeMerchant from "components/HomeMerchant";
+import HomeCustomer from "components/HomeCustomer";
 
 export default function Home() {
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
@@ -152,11 +153,7 @@ export default function Home() {
       </Navbar>
 
       {selectedTab === 'Customer' && (
-        <div className="flex flex-1 items-center justify-center">
-          <p>Customers Content </p>
-
-          <Button color="primary" onClick={testfn} />
-        </div>
+        <HomeCustomer />
       )}
 
       {selectedTab === 'Merchant' && (
@@ -171,8 +168,6 @@ export default function Home() {
               </CardBody>
             </Card>
           </a>
-          <Button color="primary" onClick={testfn} />
-
         </div>
       )}
     </main>

@@ -1,19 +1,19 @@
 'use client';
 
-import { Card, CardBody, CardFooter } from "@nextui-org/react"
-import React, { useEffect, useState } from "react"
-import { Store } from 'lucide-react';
+import { Card, CardBody } from "@nextui-org/react"
+import React, { use, useEffect, useState } from "react"
 import { _SERVICE } from "declarations/hello/hello.did";
 import { AuthClient } from "@dfinity/auth-client";
 import { createActor, hello } from "declarations/hello";
 
-interface HomeMerchantProps { }
+interface HomeCustomerProps { }
 
 interface Shop {
     name: string;
+    owner: string;
 }
 
-const HomeMerchant: React.FC<HomeMerchantProps> = ({ }) => {
+const HomeCustomer: React.FC<HomeCustomerProps> = ({ }) => {
     // shops
     const [shops, setShops] = useState<Shop[]>([]);
 
@@ -36,24 +36,28 @@ const HomeMerchant: React.FC<HomeMerchantProps> = ({ }) => {
             },
         });
 
-        const shops = await actor.get_shops();
-        setShops(shops);
+        const shopsData = await actor.all_shops();
+        const formattedShops = shopsData.map(shopStr => {
+            const [name, owner] = shopStr.split(":");
+            return { name, owner };
+        });
+
+        // setShops(shops);
+        setShops(formattedShops);
     }
 
     return (
-        <>
+        <div className="gap-4 grid grid-cols-1 items-start px-2 w-full">
             {shops.map((shop, index) => (
-                <Card shadow="sm" key={index} isPressable onPress={() => console.log("item pressed")}>
-                    <CardBody className="overflow-visible px-4 pt-8 flex justify-center items-center">
-                        <Store size={110} className="text-center" />
+                <Card shadow="sm" key={index} isPressable onPress={() => console.log("item pressed")} className="min-w-[300px]">
+                    <CardBody className="flex flex-col justify-start px-4 py-8">
+                        <div className="text-left text-2xl font-bold text-white pb-2">{shop.name}</div>
+                        <div className="text-xs text-cyan-700">{shop.owner}</div>
                     </CardBody>
-                    <CardFooter className="flex justify-center text-2xl">
-                        <b>{shop.name}</b>
-                    </CardFooter>
                 </Card>
             ))}
-        </>
+        </div>
     )
 }
 
-export default HomeMerchant
+export default HomeCustomer
