@@ -13,8 +13,6 @@ import { createActor, hello } from "declarations/hello";
 import { UserIcon } from 'lucide-react';
 import { Principal } from '@dfinity/principal';
 import { log } from 'console';
-// import { Grid, Text } from '@nextui-org/react';
-
 
 export default function Home() {
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
@@ -49,6 +47,7 @@ export default function Home() {
 
     testfn();
   }
+
 
   const updateClient = async (client: AuthClient) => {
     const isAuthenticated = await client.isAuthenticated();
@@ -85,7 +84,6 @@ export default function Home() {
       },
     });
   };
-
 
   const testfn = async () => {
     const identity = authClient?.getIdentity();
@@ -156,7 +154,9 @@ export default function Home() {
 
       {selectedTab === 'Customer' && (
         <div className="flex flex-1 items-center justify-center">
-          <p>Customers Content</p>
+          <p>Customers Content </p>
+
+          <Button color="primary" onClick={testfn} />
         </div>
       )}
 
@@ -188,6 +188,7 @@ export default function Home() {
               </CardBody>
             </Card>
           </a>
+          <Button color="primary" onClick={testfn} />
 
         </div>
       )}
