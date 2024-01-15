@@ -1,5 +1,8 @@
 type Shop = record {
+  idx : nat64;
   name : text;
+  owner : text;
+  customer : vec text;
 };
 
 service : {
@@ -7,4 +10,7 @@ service : {
   whoami : () -> (text) query;
   create_shop : (text) -> ();
   get_shops : () -> (vec Shop) query;
+  all_shops : () -> (vec text) query;
+  add_card : (text) -> ();
+  get_cards : () -> (vec text) query;
 };
