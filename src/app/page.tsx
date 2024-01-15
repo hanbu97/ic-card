@@ -95,7 +95,6 @@ export default function Home() {
   }
 
   return (
-    // <main className="dark bg-black flex flex-col items-center justify-between ">
     <main className="dark bg-black flex flex-col items-center justify-start min-h-screen">
       <Navbar className='bg-black'>
         <NavbarBrand>

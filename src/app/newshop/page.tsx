@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Navbar, Button, Input } from '@nextui-org/react';
 import { ArrowLeft } from 'lucide-react';
+
 import { useEffect, useState } from "react";
 import { AuthClient } from "@dfinity/auth-client";
 import { createActor, hello } from "declarations/hello";
@@ -11,7 +12,9 @@ import { ActorSubclass } from "@dfinity/agent";
 import { _SERVICE } from "declarations/hello/hello.did";
 import { useRouter } from "next/navigation";
 
+
 const NewShop: React.FC = () => {
+    const router = useRouter();
     const [value, setValue] = useState("");
     const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE> | null>(null);
     const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
@@ -55,6 +58,17 @@ const NewShop: React.FC = () => {
         }
     }
 
+
+    const { principal, whoami, initAuthClient } = authStore;
+
+    const handleCreate = async () => {
+        if (value != "") {
+            // createShop(value);
+            initAuthClient();
+            whoami();
+            console.log(principal);
+        }
+    };
 
     return (
         <div className="bg-black min-h-screen">

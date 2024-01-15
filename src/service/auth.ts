@@ -1,3 +1,4 @@
+
 // import { AuthClient } from "@dfinity/auth-client";
 
 // const updateClient = async (client: AuthClient) => {
@@ -14,3 +15,4 @@
 
 //     setWhoamiActor(actor);
 // }
+
