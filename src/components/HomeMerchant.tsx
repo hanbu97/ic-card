@@ -3,15 +3,11 @@
 import { Card, CardBody, CardFooter } from "@nextui-org/react"
 import React, { useEffect, useState } from "react"
 import { Store } from 'lucide-react';
-import { _SERVICE } from "declarations/hello/hello.did";
+import { Shop, _SERVICE } from "declarations/hello/hello.did";
 import { AuthClient } from "@dfinity/auth-client";
 import { createActor, hello } from "declarations/hello";
 
 interface HomeMerchantProps { }
-
-interface Shop {
-    name: string;
-}
 
 const HomeMerchant: React.FC<HomeMerchantProps> = ({ }) => {
     // shops

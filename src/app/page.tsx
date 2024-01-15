@@ -75,10 +75,11 @@ export default function Home() {
   }
 
   const login = () => {
+    const canisterId = process.env.CANISTER_ID_INTERNET_IDENTITY;
     authClient?.login({
       identityProvider: process.env.DFX_NETWORK === "ic"
         ? "https://identity.ic0.app"
-        : `http://localhost:4943/?canisterId=br5f7-7uaaa-aaaaa-qaaca-cai`,
+        : `http://localhost:4943/?canisterId=${canisterId}`,
       onSuccess: () => {
         updateClient(authClient);
       },

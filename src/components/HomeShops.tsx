@@ -1,14 +1,20 @@
 'use client';
 
-import { Button, Card, CardBody } from "@nextui-org/react"
+import { Card, CardBody } from "@nextui-org/react"
 import React, { use, useEffect, useState } from "react"
-import { Shop, _SERVICE } from "declarations/hello/hello.did";
+import { _SERVICE } from "declarations/hello/hello.did";
 import { AuthClient } from "@dfinity/auth-client";
 import { createActor, hello } from "declarations/hello";
 
-interface HomeCustomerProps { }
+interface HomeShopsProps { }
 
-const HomeCustomer: React.FC<HomeCustomerProps> = ({ }) => {
+interface Shop {
+    name: string;
+    owner: string;
+}
+
+const HomeShops: React.FC<HomeShopsProps> = ({ }) => {
+    // shops
     const [shops, setShops] = useState<Shop[]>([]);
 
     useEffect(() => {
@@ -30,19 +36,18 @@ const HomeCustomer: React.FC<HomeCustomerProps> = ({ }) => {
             },
         });
 
-        const shopsData = await actor.get_cards();
+        const shopsData = await actor.all_shops();
         const formattedShops = shopsData.map(shopStr => {
             const [name, owner] = shopStr.split(":");
             return { name, owner };
         });
 
         // setShops(shops);
-        // setShops(formattedShops);
+        setShops(formattedShops);
     }
 
     return (
         <div className="gap-4 grid grid-cols-1 items-start px-2 w-full">
-            <Button />
             {shops.map((shop, index) => (
                 <Card shadow="sm" key={index} isPressable onPress={() => console.log("item pressed")} className="min-w-[300px]">
                     <CardBody className="flex flex-col justify-start px-4 py-8">
@@ -55,4 +60,4 @@ const HomeCustomer: React.FC<HomeCustomerProps> = ({ }) => {
     )
 }
 
-export default HomeCustomer
+export default HomeShops
